@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm ci
+RUN npm install
 
 ENV PORT=3000
 
