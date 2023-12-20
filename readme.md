@@ -12,8 +12,8 @@ products:
 - azure-container-apps
 - azure-container-registry
 urlFragment: azd
-name: Sample Express and Node.js application for Azure Cosmos DB for NoSQL
-description: This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL's client library for Node.js. This sample application accesses an existing account, database, and container using the @azure/cosmos and @azure/identity packages.
+name: Minimal Express and Node.js application for Azure Cosmos DB for NoSQL
+description: This is a minimal Node.js & Express web application to illustrate basic usage of Azure Cosmos DB for NoSQL's client library for Node.js. This sample application accesses an existing account, database, and container using the @azure/cosmos and @azure/identity packages.
 ---
 
 # Quickstart: Azure Cosmos DB for NoSQL client library for Node.js
