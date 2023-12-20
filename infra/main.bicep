@@ -26,7 +26,7 @@ var abbreviations = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = {
   'azd-env-name': environmentName
-  repo: 'https://github.com/azure-samples/cosmos-db-nosql-javascript-quickstart'
+  repo: 'https://github.com/azure-samples/cosmos-db-nosql-nodejs-quickstart'
 }
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {

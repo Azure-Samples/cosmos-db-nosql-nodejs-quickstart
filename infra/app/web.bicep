@@ -55,7 +55,7 @@ module containerAppsApp '../core/host/container-apps/app.bicep' = {
         secretRef: 'azure-managed-identity-client-id' // Reference to secret
       }
     ]
-    targetPort: 8000
+    targetPort: 3000
     enableSystemAssignedManagedIdentity: false
     userAssignedManagedIdentityIds: [
       userAssignedManagedIdentity.resourceId
