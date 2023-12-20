@@ -50,7 +50,7 @@ Here's a high level architecture diagram that illustrates these components. Noti
 %%{ init: { 'theme': 'base', 'themeVariables': { 'background': '#243A5E', 'primaryColor': '#50E6FF', 'primaryBorderColor': '#243A5E', 'tertiaryBorderColor': '#50E6FF', 'tertiaryColor': '#243A5E', 'fontFamily': 'Segoe UI', 'lineColor': '#FFFFFF', 'primaryTextColor': '#243A5E', 'tertiaryTextColor': '#FFFFFF' } }}%%
 flowchart TB
     subgraph web-app[Azure Container Apps]
-        app-framework([Node.js 20 | Express 4])
+        app-framework(["Node.js 20 | Express 4"])
     end
     subgraph cosmos-db[Azure Cosmos DB]
         subgraph database-cosmicworks[Database: cosmicworks]
