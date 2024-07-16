@@ -7,6 +7,8 @@ import favicon from 'serve-favicon';
 
 import { start } from './cosmos.js'
 
+import 'dotenv/config'
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
