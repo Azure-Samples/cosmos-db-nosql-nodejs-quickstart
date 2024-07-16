@@ -93,9 +93,9 @@ module security 'app/security.bicep' = {
 }
 
 // Database outputs
-output AZURE_COSMOS_ENDPOINT string = database.outputs.endpoint
-output AZURE_COSMOS_DATABASE_NAME string = database.outputs.database.name
-output AZURE_COSMOS_CONTAINER_NAMES array = map(database.outputs.containers, c => c.name)
+output AZURE_COSMOS_DB_ENDPOINT string = database.outputs.endpoint
+output AZURE_COSMOS_DB_DATABASE_NAME string = database.outputs.database.name
+output AZURE_COSMOS_DB_CONTAINER_NAMES array = map(database.outputs.containers, c => c.name)
 
 // Container outputs
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
@@ -110,8 +110,3 @@ output AZURE_USER_ASSIGNED_IDENTITY_NAME string = identity.outputs.name
 
 // Security outputs
 output AZURE_NOSQL_ROLE_DEFINITION_ID string = security.outputs.roleDefinitions.nosql
-
-// Application environment variables
-output COSMOS_DB_ENDPOINT string = database.outputs.endpoint
-output COSMOS_DB_DATABASE string = database.outputs.database.name
-output COSMOS_DB_CONTAINER string = database.outputs.containers[0].name
