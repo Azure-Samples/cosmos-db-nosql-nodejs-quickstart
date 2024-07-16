@@ -23,6 +23,8 @@ app.use(
   favicon(join(__dirname, 'static', 'favicon.ico'))
 );
 
+app.use(express.static('static'));
+
 io.on('connection', (socket) => {
   console.log(`Connected: ${socket.id}`);
 
