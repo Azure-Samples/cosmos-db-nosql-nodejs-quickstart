@@ -15,6 +15,7 @@
   "dependencies": {
     "@azure/cosmos": "^4.0.0",
     "@azure/identity": "^4.0.0",
+    "dotenv": "^16.4.5",
     "express": "^4",
     "serve-favicon": "^2.5.0",
     "socket.io": "^4"
