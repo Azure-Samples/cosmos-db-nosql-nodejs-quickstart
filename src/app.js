@@ -7,6 +7,8 @@ import favicon from 'serve-favicon';
 
 import { start } from './cosmos.js'
 
+import 'dotenv/config'
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -20,6 +22,8 @@ app.get('/', (_, res) => {
 app.use(
   favicon(join(__dirname, 'static', 'favicon.ico'))
 );
+
+app.use(express.static('static'));
 
 io.on('connection', (socket) => {
   console.log(`Connected: ${socket.id}`);
