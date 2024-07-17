@@ -13,7 +13,10 @@ jobs:
       - name: Check Node.js version
         run: node --version         
       - name: Check NPM version
-        run: npm --version   
-      - name: Install NPM packages
+        run: npm --version
+      - name: Install NPM packages (Javascript)
         run: npm install
-        working-directory: ./src
+        working-directory: ./src/js
+      - name: Install NPM packages (Typescript)
+        run: npm install
+        working-directory: ./src/ts

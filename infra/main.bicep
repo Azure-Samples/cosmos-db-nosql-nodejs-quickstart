@@ -16,11 +16,13 @@ param principalId string = ''
 param cosmosDbAccountName string = ''
 param containerRegistryName string = ''
 param containerAppsEnvName string = ''
-param containerAppsAppName string = ''
+param containerAppsTypeScriptAppName string = ''
+param containerAppsJavaScriptAppName string = ''
 param userAssignedIdentityName string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
-param serviceName string = 'web'
+param typeScriptServiceName string = 'typescript-web'
+param javaScriptServiceName string = 'javascript-web'
 
 var abbreviations = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -39,7 +41,9 @@ module identity 'app/identity.bicep' = {
   name: 'identity'
   scope: resourceGroup
   params: {
-    identityName: !empty(userAssignedIdentityName) ? userAssignedIdentityName : '${abbreviations.userAssignedIdentity}-${resourceToken}'
+    identityName: !empty(userAssignedIdentityName)
+      ? userAssignedIdentityName
+      : '${abbreviations.userAssignedIdentity}-${resourceToken}'
     location: location
     tags: tags
   }
@@ -59,18 +63,30 @@ module registry 'app/registry.bicep' = {
   name: 'registry'
   scope: resourceGroup
   params: {
-    registryName: !empty(containerRegistryName) ? containerRegistryName : '${abbreviations.containerRegistry}${resourceToken}'
+    registryName: !empty(containerRegistryName)
+      ? containerRegistryName
+      : '${abbreviations.containerRegistry}${resourceToken}'
     location: location
     tags: tags
   }
 }
 
-module web 'app/web.bicep' = {
-  name: serviceName
+module environment 'app/environment.bicep' = {
+  name: 'environment'
   scope: resourceGroup
   params: {
     envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
-    appName: !empty(containerAppsAppName) ? containerAppsAppName : '${abbreviations.containerAppsApp}-${resourceToken}'
+    location: location
+    tags: tags
+  }
+}
+
+module jsweb 'app/web.bicep' = {
+  name: javaScriptServiceName
+  scope: resourceGroup
+  params: {
+    appName: !empty(containerAppsJavaScriptAppName) ? containerAppsJavaScriptAppName : '${abbreviations.containerAppsApp}-js-${resourceToken}'
+    envName: environment.outputs.name
     databaseAccountEndpoint: database.outputs.endpoint
     userAssignedManagedIdentity: {
       resourceId: identity.outputs.resourceId
@@ -78,7 +94,24 @@ module web 'app/web.bicep' = {
     }
     location: location
     tags: tags
-    serviceTag: serviceName
+    serviceTag: javaScriptServiceName
+  }
+}
+
+module tsweb 'app/web.bicep' = {
+  name: typeScriptServiceName
+  scope: resourceGroup
+  params: {
+    appName: !empty(containerAppsTypeScriptAppName) ? containerAppsTypeScriptAppName : '${abbreviations.containerAppsApp}-ts-${resourceToken}'
+    envName: environment.outputs.name
+    databaseAccountEndpoint: database.outputs.endpoint
+    userAssignedManagedIdentity: {
+      resourceId: identity.outputs.resourceId
+      clientId: identity.outputs.clientId
+    }
+    location: location
+    tags: tags
+    serviceTag: typeScriptServiceName
   }
 }
 
@@ -102,8 +135,9 @@ output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
 output AZURE_CONTAINER_REGISTRY_NAME string = registry.outputs.name
 
 // Application outputs
-output AZURE_CONTAINER_APP_ENDPOINT string = web.outputs.endpoint
-output AZURE_CONTAINER_ENVIRONMENT_NAME string = web.outputs.envName
+output AZURE_CONTAINER_ENVIRONMENT_NAME string = environment.outputs.name
+output AZURE_CONTAINER_APP_JS_ENDPOINT string = jsweb.outputs.endpoint
+output AZURE_CONTAINER_APP_TS_ENDPOINT string = tsweb.outputs.endpoint
 
 // Identity outputs
 output AZURE_USER_ASSIGNED_IDENTITY_NAME string = identity.outputs.name

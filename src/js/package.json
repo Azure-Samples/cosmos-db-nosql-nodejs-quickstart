@@ -1,10 +1,7 @@
 {
-  "name": "azure-cosmos-db-nosql-nodejs-quickstart-api",
-  "version": "1.0.0",
-  "private": true,
   "repository": {
     "url": "https://github.com/azure-samples/cosmos-db-nosql-nodejs-quickstart.git",
-    "directory": "src/api",
+    "directory": "src/js",
     "type": "git"
   },
   "main": "app.js",

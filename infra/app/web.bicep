@@ -1,10 +1,12 @@
-metadata description = 'Create web application resources.'
+metadata description = 'Create web application host resources.'
 
-param envName string
 param appName string
 param serviceTag string
 param location string = resourceGroup().location
 param tags object = {}
+
+@description('Name of the environment where the application will be hosted.')
+param envName string
 
 @description('Endpoint for Azure Cosmos DB for NoSQL account.')
 param databaseAccountEndpoint string
@@ -17,24 +19,15 @@ type managedIdentity = {
 @description('Unique identifier for user-assigned managed identity.')
 param userAssignedManagedIdentity managedIdentity
 
-module containerAppsEnvironment '../core/host/container-apps/environments/managed.bicep' = {
-  name: 'container-apps-env'
-  params: {
-    name: envName
-    location: location
-    tags: tags
-  }
-}
-
 module containerAppsApp '../core/host/container-apps/app.bicep' = {
-  name: 'container-apps-app'
+  name: 'container-apps-app-${appName}'
   params: {
     name: appName
-    parentEnvironmentName: containerAppsEnvironment.outputs.name
+    parentEnvironmentName: envName
     location: location
     tags: union(tags, {
-        'azd-service-name': serviceTag
-      })
+      'azd-service-name': serviceTag
+    })
     secrets: [
       {
         name: 'azure-cosmos-db-nosql-endpoint' // Create a uniquely-named secret
@@ -63,5 +56,5 @@ module containerAppsApp '../core/host/container-apps/app.bicep' = {
   }
 }
 
+output name string = containerAppsApp.outputs.name
 output endpoint string = containerAppsApp.outputs.endpoint
-output envName string = containerAppsApp.outputs.name
