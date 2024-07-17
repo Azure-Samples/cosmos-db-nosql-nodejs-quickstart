@@ -7,17 +7,18 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
-    "@azure/cosmos": "^4.0.0",
-    "@azure/identity": "^4.0.0",
-    "dotenv": "^16.4.5",
+    "@azure/cosmos": "^4",
+    "@azure/identity": "^4",
+    "dotenv": "^16",
     "express": "^4",
-    "serve-favicon": "^2.5.0",
+    "serve-favicon": "^2",
     "socket.io": "^4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3"
   }
 }
