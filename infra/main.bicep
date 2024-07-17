@@ -41,7 +41,9 @@ module identity 'app/identity.bicep' = {
   name: 'identity'
   scope: resourceGroup
   params: {
-    identityName: !empty(userAssignedIdentityName) ? userAssignedIdentityName : '${abbreviations.userAssignedIdentity}-${resourceToken}'
+    identityName: !empty(userAssignedIdentityName)
+      ? userAssignedIdentityName
+      : '${abbreviations.userAssignedIdentity}-${resourceToken}'
     location: location
     tags: tags
   }
@@ -61,7 +63,19 @@ module registry 'app/registry.bicep' = {
   name: 'registry'
   scope: resourceGroup
   params: {
-    registryName: !empty(containerRegistryName) ? containerRegistryName : '${abbreviations.containerRegistry}${resourceToken}'
+    registryName: !empty(containerRegistryName)
+      ? containerRegistryName
+      : '${abbreviations.containerRegistry}${resourceToken}'
+    location: location
+    tags: tags
+  }
+}
+
+module environment 'app/environment.bicep' = {
+  name: 'environment'
+  scope: resourceGroup
+  params: {
+    envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
     location: location
     tags: tags
   }
@@ -71,8 +85,8 @@ module jsweb 'app/web.bicep' = {
   name: javaScriptServiceName
   scope: resourceGroup
   params: {
-    envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
     appName: !empty(containerAppsJavaScriptAppName) ? containerAppsJavaScriptAppName : '${abbreviations.containerAppsApp}-js-${resourceToken}'
+    envName: environment.outputs.name
     databaseAccountEndpoint: database.outputs.endpoint
     userAssignedManagedIdentity: {
       resourceId: identity.outputs.resourceId
@@ -88,8 +102,8 @@ module tsweb 'app/web.bicep' = {
   name: typeScriptServiceName
   scope: resourceGroup
   params: {
-    envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
     appName: !empty(containerAppsTypeScriptAppName) ? containerAppsTypeScriptAppName : '${abbreviations.containerAppsApp}-ts-${resourceToken}'
+    envName: environment.outputs.name
     databaseAccountEndpoint: database.outputs.endpoint
     userAssignedManagedIdentity: {
       resourceId: identity.outputs.resourceId
@@ -121,7 +135,7 @@ output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
 output AZURE_CONTAINER_REGISTRY_NAME string = registry.outputs.name
 
 // Application outputs
-output AZURE_CONTAINER_ENVIRONMENT_NAME string = jsweb.outputs.envName
+output AZURE_CONTAINER_ENVIRONMENT_NAME string = environment.outputs.name
 output AZURE_CONTAINER_APP_JS_ENDPOINT string = jsweb.outputs.endpoint
 output AZURE_CONTAINER_APP_TS_ENDPOINT string = tsweb.outputs.endpoint
 
