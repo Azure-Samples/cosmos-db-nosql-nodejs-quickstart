@@ -6,9 +6,7 @@ COPY . .
 
 RUN npm install
 
-RUN npm install --global typescript
-
-RUN tsc
+RUN npm run build
 
 ENV PORT=3000
 

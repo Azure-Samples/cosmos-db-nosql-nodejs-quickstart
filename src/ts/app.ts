@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Application, Request, Response } from 'express';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 import { Server } from 'socket.io';
@@ -8,19 +8,19 @@ import { DataClient } from './cosmos'
 
 import 'dotenv/config'
 
-const app: Express = express();
+const app: Application = express();
 const server = createServer(app);
 const io = new Server(server);
 
 app.get('/', (_: Request, res: Response) => {
-  res.sendFile(join(__dirname, 'static', 'index.html'));
+  res.sendFile(join(__dirname, '../static', 'index.html'));
 });
 
 app.use(
-  favicon(join(__dirname, 'static', 'favicon.ico'))
+  favicon(join(__dirname, '../static', 'favicon.ico'))
 );
 
-app.use(express.static('static'));
+app.use(express.static('../static'));
 app.use(express.static('dist'));
 
 io.on('connection', (socket) => {

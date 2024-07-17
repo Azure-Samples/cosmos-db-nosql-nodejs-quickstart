@@ -1,4 +1,4 @@
-import { ItemDefinition, QueryMetricsConstants } from '@azure/cosmos';
+import { ItemDefinition } from '@azure/cosmos';
 
 export type Emit = (message: string) => void;
 

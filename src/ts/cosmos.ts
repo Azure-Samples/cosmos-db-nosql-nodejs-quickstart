@@ -1,5 +1,5 @@
 import { DefaultAzureCredential } from '@azure/identity';
-import { Container, CosmosClient, Database, FeedResponse, ItemResponse } from '@azure/cosmos';
+import { Container, CosmosClient, Database, FeedResponse, ItemResponse, Resource } from '@azure/cosmos';
 
 import { Emit, Product } from './types'
 
@@ -23,7 +23,7 @@ export class DataClient {
         emit('Current Status:\tEnding...');
     }
 
-    async createClient(emit: Emit, endpoint: string = process.env.COSMOS_DB_ENDPOINT): Promise<CosmosClient> {
+    async createClient(emit: Emit, endpoint: string = process.env.COSMOS_DB_ENDPOINT!): Promise<CosmosClient> {
         console.log(`ENDPOINT: ${endpoint}`);
 
         // <create_client>
@@ -92,9 +92,9 @@ export class DataClient {
         var partitionKey = 'gear-surf-surfboards';
 
         var response: ItemResponse<Product> = await container.item(id, partitionKey).read<Product>();
-        var read_item: Product = response.resource;
+        var read_item: (Product & Resource) | undefined = response.resource;
         // </read_item>
-        emit(`Read item id:\t${read_item.id}`);
+        emit(`Read item id:\t${read_item?.id}`);
         emit(`Read item:\t${JSON.stringify(read_item)}`);
         emit(`Status code:\t${response.statusCode}`);
         emit(`Request charge:\t${response.requestCharge}`);

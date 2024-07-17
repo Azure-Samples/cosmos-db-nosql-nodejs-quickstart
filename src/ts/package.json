@@ -6,6 +6,7 @@
   },
   "main": "app.js",
   "scripts": {
+    "build": "npx tsc --project ./ && npx tsc --project ./client/",
     "start": "nodemon dist/app.js"
   },
   "dependencies": {
@@ -17,7 +18,9 @@
     "socket.io": "^4"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/jquery": "^3.5.30",
+    "@types/serve-favicon": "^2.5.7",
     "@types/socket.io-client": "^3.0.0",
     "nodemon": "^3.0.2",
     "typescript": "^5.5.3"
