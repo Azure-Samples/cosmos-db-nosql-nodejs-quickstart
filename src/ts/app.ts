@@ -13,23 +13,21 @@ const server = createServer(app);
 const io = new Server(server);
 
 app.get('/', (_: Request, res: Response) => {
-  res.sendFile(join(__dirname, '../static', 'index.html'));
+  res.sendFile(join(__dirname, 'static', 'index.html'));
 });
 
 app.use(
-  favicon(join(__dirname, '../static', 'favicon.ico'))
+  favicon(join(__dirname, 'static', 'favicon.ico'))
 );
 
-app.use(express.static('../static'));
-app.use(express.static('dist'));
+app.use(express.static('static'));
 
 io.on('connection', (socket) => {
   console.log(`Connected: ${socket.id}`);
 
   socket.on('start', async (_) => {
     console.log('Started');
-    let client: DataClient = new DataClient();
-    await client.start(message => {
+    await new DataClient().start((message: string) => {
       console.log(message);
       io.emit('new_message', message);
     });

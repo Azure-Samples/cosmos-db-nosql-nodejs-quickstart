@@ -11,6 +11,5 @@
         "dbaeumer.vscode-eslint"
       ]
     }
-  },
-  "postCreateCommand": "npm install --global typescript"
+  }
 }

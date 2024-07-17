@@ -13,8 +13,8 @@
     "**/*.ts"
   ],
   "exclude": [
+    "socket.ts",
     "node_modules",
-    "client/",
     "dist/"
-  ]
+  ],
 }
