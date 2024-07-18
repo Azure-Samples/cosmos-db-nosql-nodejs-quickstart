@@ -11,5 +11,6 @@
         "dbaeumer.vscode-eslint"
       ]
     }
-  }
+  },
+  "postCreateCommand": "npm install --prefix ./src/js && npm install --prefix ./src/ts"
 }
