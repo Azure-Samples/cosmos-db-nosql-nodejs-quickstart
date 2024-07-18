@@ -25,6 +25,7 @@ module cosmosDbAccount '../core/database/cosmos-db/nosql/account.bicep' = {
     name: accountName
     location: location
     tags: tags
+    disableKeyBasedAuth: true
   }
 }
 
