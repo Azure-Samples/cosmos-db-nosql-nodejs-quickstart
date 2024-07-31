@@ -1,5 +1,5 @@
 import express, { Application, Request, Response } from 'express';
-import { createServer } from 'node:https';
+import { createServer } from 'node:http';
 import { join } from 'node:path';
 import { Server } from 'socket.io';
 import favicon from 'serve-favicon';
@@ -9,7 +9,7 @@ import { DataClient } from './cosmos'
 import 'dotenv/config'
 
 const app: Application = express();
-const server = createServer({}, app);
+const server = createServer(app);
 const io = new Server(server);
 
 app.get('/', (_: Request, res: Response) => {
