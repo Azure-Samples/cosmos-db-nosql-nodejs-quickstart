@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "npx nodemon app.js"
+    "dev": "npx --yes nodemon app.js"
   },
   "dependencies": {
     "@azure/cosmos": "^4",
@@ -17,8 +17,5 @@
     "express": "^4",
     "serve-favicon": "^2",
     "socket.io": "^4"
-  },
-  "devDependencies": {
-    "nodemon": "^3"
   }
 }
