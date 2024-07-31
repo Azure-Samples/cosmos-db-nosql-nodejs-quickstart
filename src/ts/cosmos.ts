@@ -1,5 +1,5 @@
 import { DefaultAzureCredential } from '@azure/identity';
-import { Container, CosmosClient, Database, FeedResponse, ItemResponse, Resource } from '@azure/cosmos';
+import { Container, CosmosClient, Database, FeedResponse, ItemResponse, Resource, SqlQuerySpec } from '@azure/cosmos';
 
 import { Emit, Product } from './types'
 
@@ -92,7 +92,7 @@ export class DataClient {
         var partitionKey = 'gear-surf-surfboards';
 
         var response: ItemResponse<Product> = await container.item(id, partitionKey).read<Product>();
-        var read_item: (Product & Resource) | undefined = response.resource;
+        var read_item: Product = response.resource!;
         // </read_item>
         emit(`Read item id:\t${read_item?.id}`);
         emit(`Read item:\t${JSON.stringify(read_item)}`);
@@ -102,7 +102,7 @@ export class DataClient {
 
     async queryItems(emit: Emit, container: Container) {
         // <query_items>
-        const querySpec = {
+        const querySpec: SqlQuerySpec = {
             query: 'SELECT * FROM products p WHERE p.category = @category',
             parameters: [
                 {
