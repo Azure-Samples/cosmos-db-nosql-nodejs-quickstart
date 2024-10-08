@@ -23,7 +23,7 @@ export class DataClient {
         emit('Current Status:\tEnding...');
     }
 
-    async createClient(emit: Emit, endpoint: string = process.env.COSMOS_DB_ENDPOINT!): Promise<CosmosClient> {
+    async createClient(emit: Emit, endpoint: string = process.env.AZURE_COSMOS_DB_NOSQL_ENDPOINT!): Promise<CosmosClient> {
         console.log(`ENDPOINT: ${endpoint}`);
 
         // <create_client>

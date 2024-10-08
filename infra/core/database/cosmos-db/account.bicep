@@ -14,7 +14,10 @@ param enableServerless bool = false
 @description('Disables key-based authentication. Defaults to false.')
 param disableKeyBasedAuth bool = false
 
-resource account 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
+@description('List of capabilities for the account. Defaults to an empty array.')
+param capabilities object[] = []
+
+resource account 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   name: name
   location: location
   tags: tags
@@ -37,11 +40,13 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
       serverVersion: '4.2'
     } : {}
     disableLocalAuth: disableKeyBasedAuth
-    capabilities: (enableServerless) ? [
-      {
-        name: 'EnableServerless'
-      }
-    ] : []
+    capabilities: union(capabilities,
+      (enableServerless) ? [
+        {
+          name: 'EnableServerless'
+        }
+      ] : []
+    )
   }
 }
 

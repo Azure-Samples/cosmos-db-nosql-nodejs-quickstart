@@ -1,4 +1,4 @@
-metadata description = 'Create an Azure Cosmos DB for NoSQL role assignment.'
+metadata description = 'Create an Azure Cosmos DB for Table role assignment.'
 
 @description('Name of the target Azure Cosmos DB account.')
 param targetAccountName string
@@ -16,7 +16,7 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' existing = {
   name: targetAccountName
 }
 
-resource assignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
+resource assignment 'Microsoft.DocumentDB/databaseAccounts/tableRoleAssignments@2024-05-15' = {
   name: guid(roleDefinitionId, principalId, account.id)
   parent: account
   properties: {
