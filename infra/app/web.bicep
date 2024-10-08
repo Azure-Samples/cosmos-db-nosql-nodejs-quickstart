@@ -20,6 +20,7 @@ module containerAppsApp '../core/host/container-apps/app.bicep' = {
     tags: union(tags, {
       'azd-service-name': serviceTag
     })
+    transport: 'http'
     secrets: [
       {
         name: 'azure-cosmos-db-nosql-endpoint' // Create a uniquely-named secret
