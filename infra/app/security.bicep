@@ -3,7 +3,7 @@ metadata description = 'Create role assignment and definition resources.'
 param databaseAccountName string
 
 @description('Id of the service principals to assign database and application roles.')
-param appPrincipalId string = ''
+param appPrincipalIds string[] = []
 
 @description('Id of the user principals to assign database and application roles.')
 param userPrincipalId string = ''
@@ -25,14 +25,14 @@ module nosqlDefinition '../core/database/cosmos-db/nosql/role/definition.bicep' 
   }
 }
 
-module nosqlAppAssignment '../core/database/cosmos-db/nosql/role/assignment.bicep' = if (!empty(appPrincipalId)) {
-  name: 'nosql-role-assignment-app'
+module nosqlAppAssignments '../core/database/cosmos-db/nosql/role/assignment.bicep' = [for (appPrincipalId, index) in appPrincipalIds: {
+  name: 'nosql-role-assignment-app-${index}'
   params: {
     targetAccountName: database.name // Existing account
     roleDefinitionId: nosqlDefinition.outputs.id // New role definition
     principalId: appPrincipalId // Principal to assign role
   }
-}
+}]
 
 module nosqlUserAssignment '../core/database/cosmos-db/nosql/role/assignment.bicep' = if (!empty(userPrincipalId)) {
   name: 'nosql-role-assignment-user'
@@ -56,7 +56,4 @@ output roleDefinitions object = {
   nosql: nosqlDefinition.outputs.id
 }
 
-output roleAssignments array = union(
-  !empty(appPrincipalId) ? [ nosqlAppAssignment.outputs.id ] : [],
-  !empty(userPrincipalId) ? [ nosqlUserAssignment.outputs.id, registryUserAssignment.outputs.id ] : []
-)
+output roleAssignments array = !empty(userPrincipalId) ? [ nosqlUserAssignment.outputs.id, registryUserAssignment.outputs.id ] : []

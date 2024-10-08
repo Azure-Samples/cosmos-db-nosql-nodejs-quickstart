@@ -1,4 +1,4 @@
-metadata description = 'Create an Azure Cosmos DB for NoSQL account.'
+metadata description = 'Create an Azure Cosmos DB for Table account.'
 
 param name string
 param location string = resourceGroup().location
@@ -11,7 +11,7 @@ param enableServerless bool = false
 param disableKeyBasedAuth bool = true
 
 module account '../account.bicep' = {
-  name: 'cosmos-db-nosql-account'
+  name: 'cosmos-db-table-account'
   params: {
     name: name
     location: location
@@ -19,8 +19,13 @@ module account '../account.bicep' = {
     kind: 'GlobalDocumentDB'
     enableServerless: enableServerless
     disableKeyBasedAuth: disableKeyBasedAuth
+    capabilities: [
+      {
+        name: 'EnableTable'
+      }
+    ]
   }
 }
 
-output endpoint string = 'https://${account.outputs.name}.documents.azure.com:443/'
+output endpoint string = 'https://${account.outputs.name}.table.cosmos.azure.com:443/'
 output name string = account.outputs.name

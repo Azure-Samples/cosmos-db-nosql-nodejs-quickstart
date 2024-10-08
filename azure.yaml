@@ -23,14 +23,14 @@ hooks:
     windows:
       shell: pwsh
       run: |
-        echo "COSMOS_DB_ENDPOINT=""$env:AZURE_COSMOS_DB_ENDPOINT""" > ./src/js/.env
-        echo "COSMOS_DB_ENDPOINT=""$env:AZURE_COSMOS_DB_ENDPOINT""" > ./src/ts/.env
+        echo "AZURE_COSMOS_DB_NOSQL_ENDPOINT=""$env:AZURE_COSMOS_DB_NOSQL_ENDPOINT""" > ./src/js/.env
+        echo "AZURE_COSMOS_DB_NOSQL_ENDPOINT=""$env:AZURE_COSMOS_DB_NOSQL_ENDPOINT""" > ./src/ts/.env
       continueOnError: false
       interactive: true
     posix:
       shell: sh
       run: |
-        echo "COSMOS_DB_ENDPOINT=\"$AZURE_COSMOS_DB_ENDPOINT\"" > ./src/js/.env
-        echo "COSMOS_DB_ENDPOINT=\"$AZURE_COSMOS_DB_ENDPOINT\"" > ./src/ts/.env
+        echo "AZURE_COSMOS_DB_NOSQL_ENDPOINT=\"$AZURE_COSMOS_DB_NOSQL_ENDPOINT\"" > ./src/js/.env
+        echo "AZURE_COSMOS_DB_NOSQL_ENDPOINT=\"$AZURE_COSMOS_DB_NOSQL_ENDPOINT\"" > ./src/ts/.env
       continueOnError: false
       interactive: true

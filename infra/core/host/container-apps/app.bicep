@@ -72,6 +72,15 @@ param enableSystemAssignedManagedIdentity bool = false
 @description('List of user-assigned managed identities. Defaults to an empty array.')
 param userAssignedManagedIdentityIds string[] = []
 
+@allowed([
+  'auto'
+  'http'
+  'http2'
+  'tcp'
+])
+@description('Transport protocol. Defaults to "auto".')
+param transport string = 'auto'
+
 resource environment 'Microsoft.App/managedEnvironments@2023-05-01' existing = {
   name: parentEnvironmentName
 }
@@ -90,7 +99,7 @@ resource app 'Microsoft.App/containerApps@2023-05-01' = {
       ingress: ingressEnabled ? {
         external: externalAccess
         targetPort: targetPort
-        transport: 'auto'
+        transport: transport
         corsPolicy: {
           allowedOrigins: union([ 'https://portal.azure.com', 'https://ms.portal.azure.com' ], allowedOrigins)
         }

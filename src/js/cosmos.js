@@ -2,7 +2,7 @@ import { DefaultAzureCredential } from '@azure/identity';
 import { CosmosClient } from '@azure/cosmos';
 
 export async function start(emit) {
-    const endpoint = process.env.COSMOS_DB_ENDPOINT;
+    const endpoint = process.env.AZURE_COSMOS_DB_NOSQL_ENDPOINT;
     console.log(`ENDPOINT: ${endpoint}`);
 
     // <create_client>
