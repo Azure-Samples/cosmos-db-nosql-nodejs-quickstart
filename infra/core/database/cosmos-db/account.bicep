@@ -50,5 +50,4 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   }
 }
 
-output endpoint string = account.properties.documentEndpoint
 output name string = account.name

@@ -22,5 +22,5 @@ module account '../account.bicep' = {
   }
 }
 
-output endpoint string = account.outputs.endpoint
+output endpoint string = 'https://${account.outputs.name}.documents.azure.com:443/'
 output name string = account.outputs.name

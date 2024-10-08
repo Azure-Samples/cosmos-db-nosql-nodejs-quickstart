@@ -27,5 +27,5 @@ module account '../account.bicep' = {
   }
 }
 
-output endpoint string = account.outputs.endpoint
+output endpoint string = 'https://${account.outputs.name}.table.cosmos.azure.com:443/'
 output name string = account.outputs.name
