@@ -29,7 +29,7 @@ module containerAppsApp '../core/host/container-apps/app.bicep' = {
     ]
     environmentVariables: [
       {
-        name: 'COSMOS_DB_ENDPOINT' // Name of the environment variable referenced in the application
+        name: 'AZURE_COSMOS_DB_NOSQL_ENDPOINT' // Name of the environment variable referenced in the application
         secretRef: 'azure-cosmos-db-nosql-endpoint' // Reference to secret
       }
     ]
