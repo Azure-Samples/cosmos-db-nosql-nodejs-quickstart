@@ -20,7 +20,8 @@ param containerAppsEnvName string = ''
 param containerAppsAppName string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
-param serviceName string = 'web'
+param typeScriptServiceName string = 'typescript-web'
+param javaScriptServiceName string = 'javascript-web'
 
 var abbreviations = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -68,7 +69,7 @@ module registry 'app/registry.bicep' = {
 }
 
 module web 'app/web.bicep' = {
-  name: serviceName
+  name: 'web'
   scope: resourceGroup
   params: {
     workspaceName: !empty(logWorkspaceName) ? logWorkspaceName : '${abbreviations.logAnalyticsWorkspace}-${resourceToken}'
@@ -76,7 +77,8 @@ module web 'app/web.bicep' = {
     appName: !empty(containerAppsAppName) ? containerAppsAppName : '${abbreviations.containerAppsApp}-${resourceToken}'
     location: location
     tags: tags
-    serviceTag: serviceName    
+    jsServiceTag: javaScriptServiceName
+    tsServiceTag: typeScriptServiceName
     appResourceId: identity.outputs.resourceId
     appClientId: identity.outputs.clientId
     databaseAccountEndpoint: database.outputs.endpoint
@@ -91,5 +93,6 @@ output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
 output AZURE_CONTAINER_REGISTRY_NAME string = registry.outputs.name
 
 // Application outputs
-output AZURE_CONTAINER_APP_ENDPOINT string = web.outputs.endpoint
+output AZURE_CONTAINER_APP_JS_ENDPOINT string = web.outputs.jsEndpoint
+output AZURE_CONTAINER_APP_TS_ENDPOINT string = web.outputs.tsEndpoint
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = web.outputs.envName
