@@ -17,7 +17,8 @@ param logWorkspaceName string = ''
 param cosmosDbAccountName string = ''
 param containerRegistryName string = ''
 param containerAppsEnvName string = ''
-param containerAppsAppName string = ''
+param containerAppsTypeScriptAppName string = ''
+param containerAppsJavaScriptAppName string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
 param typeScriptServiceName string = 'typescript-web'
@@ -74,7 +75,8 @@ module web 'app/web.bicep' = {
   params: {
     workspaceName: !empty(logWorkspaceName) ? logWorkspaceName : '${abbreviations.logAnalyticsWorkspace}-${resourceToken}'
     envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
-    appName: !empty(containerAppsAppName) ? containerAppsAppName : '${abbreviations.containerAppsApp}-${resourceToken}'
+    jsAppName: !empty(containerAppsJavaScriptAppName) ? containerAppsJavaScriptAppName : '${abbreviations.containerAppsApp}-js-${resourceToken}'
+    tsAppName: !empty(containerAppsTypeScriptAppName) ? containerAppsTypeScriptAppName : '${abbreviations.containerAppsApp}-ts-${resourceToken}'
     location: location
     tags: tags
     jsServiceTag: javaScriptServiceName

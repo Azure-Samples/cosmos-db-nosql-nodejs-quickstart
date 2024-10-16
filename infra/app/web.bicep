@@ -2,7 +2,8 @@ metadata description = 'Create web application resources.'
 
 param workspaceName string
 param envName string
-param appName string
+param jsAppName string
+param tsAppName string
 param jsServiceTag string
 param tsServiceTag string
 param location string = resourceGroup().location
@@ -40,7 +41,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.0
 module containerAppsJsApp 'br/public:avm/res/app/container-app:0.9.0' = {
   name: 'container-apps-app-js'
   params: {
-    name: appName
+    name: jsAppName
     environmentResourceId: containerAppsEnvironment.outputs.resourceId
     location: location
     tags: union(tags, { 'azd-service-name': jsServiceTag })
@@ -90,7 +91,7 @@ module containerAppsJsApp 'br/public:avm/res/app/container-app:0.9.0' = {
 module containerAppsTsApp 'br/public:avm/res/app/container-app:0.9.0' = {
   name: 'container-apps-app-ts'
   params: {
-    name: appName
+    name: tsAppName
     environmentResourceId: containerAppsEnvironment.outputs.resourceId
     location: location
     tags: union(tags, { 'azd-service-name': tsServiceTag })
