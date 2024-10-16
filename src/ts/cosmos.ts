@@ -20,7 +20,7 @@ export class DataClient {
 
         await this.queryItems(emit, container);
 
-        emit('Current Status:\tEnding...');
+        emit('Current Status:\tFinalizing...');
     }
 
     async createClient(emit: Emit): Promise<CosmosClient> {
