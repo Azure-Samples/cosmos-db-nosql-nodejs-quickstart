@@ -13,15 +13,14 @@ param location string
 param principalId string = ''
 
 // Optional parameters
+param logWorkspaceName string = ''
 param cosmosDbAccountName string = ''
 param containerRegistryName string = ''
 param containerAppsEnvName string = ''
-param containerAppsTypeScriptAppName string = ''
-param containerAppsJavaScriptAppName string = ''
+param containerAppsAppName string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
-param typeScriptServiceName string = 'typescript-web'
-param javaScriptServiceName string = 'javascript-web'
+param serviceName string = 'web'
 
 var abbreviations = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -36,6 +35,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   tags: tags
 }
 
+module identity 'app/identity.bicep' = {
+  name: 'identity'
+  scope: resourceGroup
+  params: {
+    identityName: '${abbreviations.userAssignedIdentity}-${resourceToken}'
+    location: location
+    tags: tags
+  }
+}
+
 module database 'app/database.bicep' = {
   name: 'database'
   scope: resourceGroup
@@ -43,15 +52,8 @@ module database 'app/database.bicep' = {
     accountName: !empty(cosmosDbAccountName) ? cosmosDbAccountName : '${abbreviations.cosmosDbAccount}-${resourceToken}'
     location: location
     tags: tags
-  }
-}
-
-module data 'app/data.bicep' = {
-  name: 'data'
-  scope: resourceGroup
-  params: {
-    databaseAccountName: database.outputs.accountName
-    tags: tags
+    appPrincipalId: identity.outputs.principalId
+    userPrincipalId: !empty(principalId) ? principalId : null
   }
 }
 
@@ -59,76 +61,35 @@ module registry 'app/registry.bicep' = {
   name: 'registry'
   scope: resourceGroup
   params: {
-    registryName: !empty(containerRegistryName)
-      ? containerRegistryName
-      : '${abbreviations.containerRegistry}${resourceToken}'
+    registryName: !empty(containerRegistryName) ? containerRegistryName : '${abbreviations.containerRegistry}${resourceToken}'
     location: location
     tags: tags
   }
 }
 
-module environment 'app/environment.bicep' = {
-  name: 'environment'
+module web 'app/web.bicep' = {
+  name: serviceName
   scope: resourceGroup
   params: {
+    workspaceName: !empty(logWorkspaceName) ? logWorkspaceName : '${abbreviations.logAnalyticsWorkspace}-${resourceToken}'
     envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
+    appName: !empty(containerAppsAppName) ? containerAppsAppName : '${abbreviations.containerAppsApp}-${resourceToken}'
     location: location
     tags: tags
-  }
-}
-
-module jsweb 'app/web.bicep' = {
-  name: javaScriptServiceName
-  scope: resourceGroup
-  params: {
-    appName: !empty(containerAppsJavaScriptAppName) ? containerAppsJavaScriptAppName : '${abbreviations.containerAppsApp}-js-${resourceToken}'
-    envName: environment.outputs.name
+    serviceTag: serviceName    
+    appResourceId: identity.outputs.resourceId
+    appClientId: identity.outputs.clientId
     databaseAccountEndpoint: database.outputs.endpoint
-    location: location
-    tags: tags
-    serviceTag: javaScriptServiceName
-  }
-}
-
-module tsweb 'app/web.bicep' = {
-  name: typeScriptServiceName
-  scope: resourceGroup
-  params: {
-    appName: !empty(containerAppsTypeScriptAppName) ? containerAppsTypeScriptAppName : '${abbreviations.containerAppsApp}-ts-${resourceToken}'
-    envName: environment.outputs.name
-    databaseAccountEndpoint: database.outputs.endpoint
-    location: location
-    tags: tags
-    serviceTag: typeScriptServiceName
-  }
-}
-
-module security 'app/security.bicep' = {
-  name: 'security'
-  scope: resourceGroup
-  params: {
-    databaseAccountName: database.outputs.accountName
-    appPrincipalIds: [
-      jsweb.outputs.systemAssignedManagedIdentityPrincipalId
-      tsweb.outputs.systemAssignedManagedIdentityPrincipalId
-    ]
-    userPrincipalId: !empty(principalId) ? principalId : null
   }
 }
 
 // Database outputs
 output AZURE_COSMOS_DB_NOSQL_ENDPOINT string = database.outputs.endpoint
-output AZURE_COSMOS_DB_NOSQL_DATABASE_NAME string = data.outputs.database.name
-output AZURE_COSMOS_DB_NOSQL_CONTAINER_NAMES array = map(data.outputs.containers, c => c.name)
 
 // Container outputs
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
 output AZURE_CONTAINER_REGISTRY_NAME string = registry.outputs.name
 
 // Application outputs
-output AZURE_CONTAINER_ENVIRONMENT_NAME string = environment.outputs.name
-output AZURE_CONTAINER_APP_JS_ENDPOINT string = jsweb.outputs.endpoint
-output AZURE_CONTAINER_APP_TS_ENDPOINT string = tsweb.outputs.endpoint
-
-// Security outputs
-output AZURE_NOSQL_ROLE_DEFINITION_ID string = security.outputs.roleDefinitions.nosql
+output AZURE_CONTAINER_APP_ENDPOINT string = web.outputs.endpoint
+output AZURE_CONTAINER_ENVIRONMENT_NAME string = web.outputs.envName
