@@ -1,25 +1,17 @@
 ---
 page_type: sample
+name: Quickstart: Azure Cosmos DB for NoSQL and Azure SDK for Node.js
+description: This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL and the Azure SDK for Node.js.
+urlFragment: template
 languages:
-- azdeveloper
-- nodejs
-- bicep
+- typescript
 - javascript
-- html
+- azdeveloper
 products:
-- azure
 - azure-cosmos-db
-- azure-container-apps
-- azure-container-registry
-urlFragment: azd
-name: Minimal Express and Node.js application for Azure Cosmos DB for NoSQL
-description: This is a minimal Node.js & Express web application to illustrate basic usage of Azure Cosmos DB for NoSQL's client library for Node.js. This sample application accesses an existing account, database, and container using the @azure/cosmos and @azure/identity packages.
 ---
 
 # Quickstart: Azure Cosmos DB for NoSQL client library for Node.js
-
-[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/Azure-Samples/cosmos-db-nosql-nodejs-quickstart?quickstart=1)
-[![Open in Dev Container](https://img.shields.io/static/v1?style=for-the-badge&label=Dev+Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/cosmos-db-nosql-nodejs-quickstart)
 
 This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL's client library for Node.js. This sample application accesses an existing account, database, and container using the [`@azure/cosmos`](https://www.npmjs.com/package/@azure/cosmos) and [`@azure/identity`](https://www.npmjs.com/package/@azure/identity) packages. Modify the source code and leverage the Infrastructure as Code (IaC) Bicep assets to get up and running quickly.
 
