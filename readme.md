@@ -1,6 +1,6 @@
 ---
 page_type: sample
-name: Quickstart: Azure Cosmos DB for NoSQL and Azure SDK for Node.js
+name: "Quickstart: Azure Cosmos DB for NoSQL and Azure SDK for Node.js"
 description: This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL and the Azure SDK for Node.js.
 urlFragment: template
 languages:
