@@ -97,7 +97,7 @@ module containerAppsTsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     tags: union(tags, { 'azd-service-name': tsServiceTag })
     ingressTargetPort: 3000
     ingressExternal: true
-    ingressTransport: 'auto'
+    ingressTransport: 'http'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -138,9 +138,3 @@ module containerAppsTsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     ]
   }
 }
-
-output jsEndpoint string = 'https://${containerAppsJsApp.outputs.fqdn}'
-output tsEndpoint string = 'https://${containerAppsTsApp.outputs.fqdn}'
-output envName string = containerAppsJsApp.outputs.name
-output jsSystemAssignedManagedIdentityPrincipalId string = containerAppsJsApp.outputs.systemAssignedMIPrincipalId
-output tsSystemAssignedManagedIdentityPrincipalId string = containerAppsTsApp.outputs.systemAssignedMIPrincipalId
