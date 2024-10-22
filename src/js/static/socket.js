@@ -1,5 +1,7 @@
 $(function () {
-    const socket = io();
+    const socket = io({
+        transports: ['websocket', 'polling']
+    });
 
     socket.on('connect', function() {
         console.log('Connected!');

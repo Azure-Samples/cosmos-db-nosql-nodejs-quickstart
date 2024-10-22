@@ -10,7 +10,13 @@ import 'dotenv/config'
 
 const app: Application = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  transports: ['websocket', 'polling'],
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  },
+});
 
 app.get('/', (_: Request, res: Response) => {
   res.sendFile(join(__dirname, 'static', 'index.html'));
