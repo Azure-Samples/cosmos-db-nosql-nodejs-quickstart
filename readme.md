@@ -50,15 +50,12 @@ This is a simple Express web application to illustrate common basic usage of Azu
 
     ![Screenshot of the deployed web application.](assets/web.png)
 
-1. (Optionally) Debug this web application locally. 
+1. (Optionally) Run this web application locally in either the `src/js` or `src/ts` folders:
 
-    1. In Visual Studio Code, start the debugging feature. For more information, see [debugging JavaScript in Visual Studio Code](https://code.visualstudio.com/docs/nodejs/nodejs-debugging) or [debugging TypeScript in Visual Studio Code](https://code.visualstudio.com/docs/typescript/typescript-debugging).
+    ```bash
+    npm install
+    npm run dev
+    ```
 
-    1. Select the **** template.
-    
-    1. Visual Studio Code will dynamically generate a debug configuration.
-
-    1. Debugging will use the Azure Cosmos DB for NoSQL account that was provisioned in a previous step.
-
-        > [!IMPORTANT]
-        > When your Azure infrastructure is provisioned, the endpoint for your deployed Azure Cosmos DB for NoSQL account is automatically saved in the *.env* file for both the JavaScript and TypeScript local projects to make debugging easier.
+    > [!IMPORTANT]
+    > When your Azure infrastructure is provisioned, the endpoint for your deployed Azure Cosmos DB for NoSQL account is automatically saved in the *.env* file for both the JavaScript and TypeScript local projects to make debugging easier.
