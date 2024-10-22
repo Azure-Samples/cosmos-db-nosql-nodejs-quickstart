@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { Server } from 'socket.io';
 import favicon from 'serve-favicon';
+import rateLimit from 'express-rate-limit';
 
 import { start } from './cosmos.js'
 
@@ -15,7 +16,12 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.get('/', (_, res) => {
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+
+app.get('/', limiter, (_, res) => {
   res.sendFile(join(__dirname, 'static', 'index.html'));
 });
 
