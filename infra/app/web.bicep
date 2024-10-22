@@ -48,6 +48,12 @@ module containerAppsJsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     ingressTargetPort: 3000
     ingressExternal: true
     ingressTransport: 'http'
+    corsPolicy: {
+      allowCredentials: true
+      allowedOrigins: [
+        '*'
+      ]
+    }
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -98,6 +104,12 @@ module containerAppsTsApp 'br/public:avm/res/app/container-app:0.9.0' = {
     ingressTargetPort: 3000
     ingressExternal: true
     ingressTransport: 'http'
+    corsPolicy: {
+      allowCredentials: true
+      allowedOrigins: [
+        '*'
+      ]
+    }
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
