@@ -10,14 +10,14 @@ services:
     host: containerapp
     docker:
       path: ./Dockerfile
-      context: ../
+      context: ./
   typescript-web:
     project: ./src/ts
     language: js
     host: containerapp
     docker:
       path: ./Dockerfile
-      context: ../
+      context: ./
 pipeline:
   provider: github
 hooks:
