@@ -7,11 +7,17 @@ services:
   javascript-web:
     project: ./src/js
     language: js
-    host: appservice
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: ../
   typescript-web:
     project: ./src/ts
     language: js
-    host: appservice
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: ../
 pipeline:
   provider: github
 hooks:
