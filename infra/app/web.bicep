@@ -71,8 +71,8 @@ module containerAppsJsApp 'br/public:avm/res/app/container-app:0.9.0' = {
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'web-front-end'
         resources: {
-          cpu: '0.25'
-          memory: '0.5Gi'
+          cpu: '1'
+          memory: '2Gi'
         }
         env: [
           {
@@ -121,8 +121,8 @@ module containerAppsTsApp 'br/public:avm/res/app/container-app:0.9.0' = {
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'web-front-end'
         resources: {
-          cpu: '0.25'
-          memory: '0.5Gi'
+          cpu: '1'
+          memory: '2Gi'
         }
         env: [
           {
