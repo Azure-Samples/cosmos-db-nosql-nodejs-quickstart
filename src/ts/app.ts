@@ -11,7 +11,13 @@ import 'dotenv/config'
 
 const app: Application = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  transports: ['websocket', 'polling'],
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  },
+});
 
 const limiter: RateLimitRequestHandler = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes

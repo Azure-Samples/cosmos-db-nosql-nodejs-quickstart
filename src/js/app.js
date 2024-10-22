@@ -12,7 +12,13 @@ import 'dotenv/config'
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  transports: ['websocket', 'polling'],
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  },
+});
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
