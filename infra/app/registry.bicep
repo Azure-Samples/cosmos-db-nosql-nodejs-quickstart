@@ -31,3 +31,5 @@ module registryUserAssignment 'br/public:avm/ptn/authorization/resource-role-ass
     )
   }
 }
+
+output endpoint string = containerRegistry.outputs.loginServer
