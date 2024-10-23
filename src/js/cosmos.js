@@ -13,7 +13,7 @@ export async function start(emit) {
         aadCredentials: credential
     });
     // </create_client>
-    emit('Current Status:\tStarting...')
+    emit('Current Status:\tStarting...');
 
     const database = client.database('cosmicworks');
 
@@ -92,4 +92,6 @@ export async function start(emit) {
         }
         emit(`Request charge:\t${response.requestCharge}`);
     }
+
+    emit('Current Status:\tFinalizing...');
 }
