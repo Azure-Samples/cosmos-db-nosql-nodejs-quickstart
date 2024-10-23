@@ -8,7 +8,7 @@ on:
     - cron: '30 4 * * 2'
 jobs:
   analyze:
-    if: github.repository == 'azure-samples/cosmos-db-nosql-dotnet-quickstart'
+    if: github.repository == 'azure-samples/cosmos-db-nosql-nodejs-quickstart'
     name: Analyze (javascript-typescript)
     runs-on: ubuntu-latest
     permissions:
