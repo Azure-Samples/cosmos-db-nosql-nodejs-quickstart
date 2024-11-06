@@ -25,7 +25,7 @@ export class DataClient {
 
     async createClient(_: Emit): Promise<CosmosClient> {
         // <create_client>
-        const endpoint: string = process.env.AZURE_COSMOS_DB_NOSQL_ENDPOINT!
+        const endpoint: string = process.env.CONFIGURATION__AZURECOSMOSDB__ENDPOINT!
         console.log(`ENDPOINT: ${endpoint}`);
 
         const credential: TokenCredential = new DefaultAzureCredential();
@@ -40,11 +40,13 @@ export class DataClient {
     }
 
     async createContainer(emit: Emit, client: CosmosClient): Promise<Container> {
-        const database: Database = client.database('cosmicworks');
+        const databaseName: string = process.env.CONFIGURATION__AZURECOSMOSDB__DATABASENAME ?? 'cosmicworks';
+        const database: Database = client.database(databaseName);
 
         emit(`Get database:\t${database.id}`);
 
-        const container: Container = database.container('products');
+        const containerName: string = process.env.CONFIGURATION__AZURECOSMOSDB__CONTAINERNAME ?? 'products';
+        const container: Container = database.container(containerName);
 
         emit(`Get container:\t${container.id}`);
 

@@ -1,9 +1,6 @@
 name: Deploy to Azure
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 permissions:
   id-token: write
   contents: read

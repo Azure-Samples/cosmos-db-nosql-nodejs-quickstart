@@ -1,3 +1,5 @@
+metadata description = 'Provisions resources for a web application that uses Azure SDK for Node.js to connect to Azure Cosmos DB for NoSQL.'
+
 targetScope = 'resourceGroup'
 
 @minLength(1)
@@ -10,72 +12,268 @@ param environmentName string
 param location string
 
 @description('Id of the principal to assign database and application roles.')
-param principalId string = ''
-
-// Optional parameters
-param logWorkspaceName string = ''
-param cosmosDbAccountName string = ''
-param containerRegistryName string = ''
-param containerAppsEnvName string = ''
-param containerAppsTypeScriptAppName string = ''
-param containerAppsJavaScriptAppName string = ''
+param deploymentUserPrincipalId string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
 param typeScriptServiceName string = 'typescript-web'
 param javaScriptServiceName string = 'javascript-web'
 
-var abbreviations = loadJsonContent('abbreviations.json')
 var resourceToken = toLower(uniqueString(resourceGroup().id, environmentName, location))
 var tags = {
   'azd-env-name': environmentName
   repo: 'https://github.com/azure-samples/cosmos-db-nosql-nodejs-quickstart'
 }
 
-module identity 'app/identity.bicep' = {
-  name: 'identity'
+module managedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+  name: 'user-assigned-identity'
   params: {
-    identityName: '${abbreviations.userAssignedIdentity}-${resourceToken}'
+    name: 'managed-identity-${resourceToken}'
     location: location
     tags: tags
   }
 }
 
-module database 'app/database.bicep' = {
-  name: 'database'
+var databaseName = 'cosmicworks'
+var containerName = 'products'
+
+module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.8.1' = {
+  name: 'cosmos-db-account'
   params: {
-    accountName: !empty(cosmosDbAccountName) ? cosmosDbAccountName : '${abbreviations.cosmosDbAccount}-${resourceToken}'
+    name: 'cosmos-db-nosql-${resourceToken}'
     location: location
+    locations: [
+      {
+        failoverPriority: 0
+        locationName: location
+        isZoneRedundant: false
+      }
+    ]
     tags: tags
-    appPrincipalId: identity.outputs.principalId
-    userPrincipalId: !empty(principalId) ? principalId : null
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuth: true
+    networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
+      ipRules: []
+      virtualNetworkRules: []
+    }
+    capabilitiesToAdd: [
+      'EnableServerless'
+    ]
+    sqlRoleDefinitions: [
+      {
+        name: 'nosql-data-plane-contributor'
+        dataAction: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+        ]
+      }
+    ]
+    sqlRoleAssignmentsPrincipalIds: union(
+      [
+        managedIdentity.outputs.principalId
+      ],
+      !empty(deploymentUserPrincipalId) ? [deploymentUserPrincipalId] : []
+    )
+    sqlDatabases: [
+      {
+        name: databaseName
+        containers: [
+          {
+            name: containerName
+            paths: [
+              '/category'
+            ]
+          }
+        ]
+      }
+    ]
   }
 }
 
-module registry 'app/registry.bicep' = {
-  name: 'registry'
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' = {
+  name: 'container-registry'
   params: {
-    registryName: !empty(containerRegistryName) ? containerRegistryName : '${abbreviations.containerRegistry}${resourceToken}'
+    name: 'containerreg${resourceToken}'
+    location: location
+    tags: tags
+    acrAdminUserEnabled: false
+    anonymousPullEnabled: true
+    publicNetworkAccess: 'Enabled'
+    acrSku: 'Standard'
+  }
+}
+
+var containerRegistryRole = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '8311e382-0749-4cb8-b61a-304f252e45ec'
+) // AcrPush built-in role
+
+module registryUserAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = if (!empty(deploymentUserPrincipalId)) {
+  name: 'container-registry-role-assignment-push-user'
+  params: {
+    principalId: deploymentUserPrincipalId
+    resourceId: containerRegistry.outputs.resourceId
+    roleDefinitionId: containerRegistryRole
+  }
+}
+
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.7.0' = {
+  name: 'log-analytics-workspace'
+  params: {
+    name: 'log-analytics-${resourceToken}'
     location: location
     tags: tags
   }
 }
 
-module web 'app/web.bicep' = {
-  name: 'web'
+module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.8.0' = {
+  name: 'container-apps-env'
   params: {
-    workspaceName: !empty(logWorkspaceName) ? logWorkspaceName : '${abbreviations.logAnalyticsWorkspace}-${resourceToken}'
-    envName: !empty(containerAppsEnvName) ? containerAppsEnvName : '${abbreviations.containerAppsEnv}-${resourceToken}'
-    jsAppName: !empty(containerAppsJavaScriptAppName) ? containerAppsJavaScriptAppName : '${abbreviations.containerAppsApp}-js-${resourceToken}'
-    tsAppName: !empty(containerAppsTypeScriptAppName) ? containerAppsTypeScriptAppName : '${abbreviations.containerAppsApp}-ts-${resourceToken}'
+    name: 'container-env-${resourceToken}'
     location: location
     tags: tags
-    jsServiceTag: javaScriptServiceName
-    tsServiceTag: typeScriptServiceName
-    appResourceId: identity.outputs.resourceId
-    appClientId: identity.outputs.clientId
-    databaseAccountEndpoint: database.outputs.endpoint
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    zoneRedundant: false
   }
 }
 
-output AZURE_COSMOS_DB_NOSQL_ENDPOINT string = database.outputs.endpoint
-output AZURE_CONTAINER_REGISTRY_ENDPOINT string = registry.outputs.endpoint
+module containerAppsJsApp 'br/public:avm/res/app/container-app:0.9.0' = {
+  name: 'container-apps-app-js'
+  params: {
+    name: 'container-app-js-${resourceToken}'
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': javaScriptServiceName })
+    ingressTargetPort: 3000
+    ingressExternal: true
+    ingressTransport: 'auto'
+    stickySessionsAffinity: 'sticky'
+    corsPolicy: {
+      allowCredentials: true
+      allowedOrigins: [
+        '*'
+      ]
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        managedIdentity.outputs.resourceId
+      ]
+    }
+    secrets: {
+      secureList: [
+        {
+          name: 'azure-cosmos-db-nosql-endpoint'
+          value: cosmosDbAccount.outputs.endpoint
+        }
+        {
+          name: 'user-assigned-managed-identity-client-id'
+          value: managedIdentity.outputs.clientId
+        }
+      ]
+    }
+    containers: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'web-front-end'
+        resources: {
+          cpu: '0.25'
+          memory: '.5Gi'
+        }
+        env: [
+          {
+            name: 'CONFIGURATION__AZURECOSMOSDB__ENDPOINT'
+            secretRef: 'azure-cosmos-db-nosql-endpoint'
+          }
+          {
+            name: 'CONFIGURATION__AZURECOSMOSDB__DATABASENAME'
+            value: databaseName
+          }
+          {
+            name: 'CONFIGURATION__AZURECOSMOSDB__CONTAINERNAME'
+            value: containerName
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            secretRef: 'user-assigned-managed-identity-client-id'
+          }
+        ]
+      }
+    ]
+  }
+}
+
+module containerAppsTsApp 'br/public:avm/res/app/container-app:0.9.0' = {
+  name: 'container-apps-app-ts'
+  params: {
+    name: 'container-app-ts-${resourceToken}'
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': typeScriptServiceName })
+    ingressTargetPort: 3000
+    ingressExternal: true
+    ingressTransport: 'auto'
+    stickySessionsAffinity: 'sticky'
+    corsPolicy: {
+      allowCredentials: true
+      allowedOrigins: [
+        '*'
+      ]
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        managedIdentity.outputs.resourceId
+      ]
+    }
+    secrets: {
+      secureList: [
+        {
+          name: 'azure-cosmos-db-nosql-endpoint'
+          value: cosmosDbAccount.outputs.endpoint
+        }
+        {
+          name: 'user-assigned-managed-identity-client-id'
+          value: managedIdentity.outputs.clientId
+        }
+      ]
+    }
+    containers: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'web-front-end'
+        resources: {
+          cpu: '0.25'
+          memory: '.5Gi'
+        }
+        env: [
+          {
+            name: 'CONFIGURATION__AZURECOSMOSDB__ENDPOINT'
+            secretRef: 'azure-cosmos-db-nosql-endpoint'
+          }
+          {
+            name: 'CONFIGURATION__AZURECOSMOSDB__DATABASENAME'
+            value: databaseName
+          }
+          {
+            name: 'CONFIGURATION__AZURECOSMOSDB__CONTAINERNAME'
+            value: containerName
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            secretRef: 'user-assigned-managed-identity-client-id'
+          }
+        ]
+      }
+    ]
+  }
+}
+
+// Azure Cosmos DB for Table outputs
+output CONFIGURATION__AZURECOSMOSDB__ENDPOINT string = cosmosDbAccount.outputs.endpoint
+output CONFIGURATION__AZURECOSMOSDB__DATABASENAME string = databaseName
+output CONFIGURATION__AZURECOSMOSDB__CONTAINERNAME string = containerName
+
+// Azure Container Registry outputs
+output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer

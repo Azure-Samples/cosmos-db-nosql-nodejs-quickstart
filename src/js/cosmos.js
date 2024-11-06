@@ -3,7 +3,7 @@ import { CosmosClient } from '@azure/cosmos';
 
 export async function start(emit) {
     // <create_client>
-    const endpoint = process.env.AZURE_COSMOS_DB_NOSQL_ENDPOINT;
+    const endpoint = process.env.CONFIGURATION__AZURECOSMOSDB__ENDPOINT;
     console.log(`ENDPOINT: ${endpoint}`);
 
     const credential = new DefaultAzureCredential();
@@ -15,11 +15,13 @@ export async function start(emit) {
     // </create_client>
     emit('Current Status:\tStarting...');
 
-    const database = client.database('cosmicworks');
+    const databaseName = process.env.CONFIGURATION__AZURECOSMOSDB__DATABASENAME ?? 'cosmicworks';
+    const database = client.database(databaseName);
 
     emit(`Get database:\t${database.id}`);
 
-    const container = database.container('products');
+    const containerName = process.env.CONFIGURATION__AZURECOSMOSDB__CONTAINERNAME ?? 'products';
+    const container = database.container(containerName);
 
     emit(`Get container:\t${container.id}`);
 
