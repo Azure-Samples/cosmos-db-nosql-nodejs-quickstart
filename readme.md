@@ -1,3 +1,4 @@
+<!--
 ---
 page_type: sample
 name: "Quickstart: Azure Cosmos DB for NoSQL and Azure SDK for Node.js"
@@ -10,6 +11,7 @@ languages:
 products:
 - azure-cosmos-db
 ---
+-->
 
 # Quickstart: Azure Cosmos DB for NoSQL client library for Node.js
 
