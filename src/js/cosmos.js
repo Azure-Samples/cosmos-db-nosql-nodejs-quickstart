@@ -27,7 +27,7 @@ export async function start(emit) {
 
     {
         var item = {
-            'id': '70b63682-b93a-4c77-aad2-65501347265f',
+            'id': 'aaaaaaaa-0000-1111-2222-bbbbbbbbbbbb',
             'category': 'gear-surf-surfboards',
             'name': 'Yamba Surfboard',
             'quantity': 12,
@@ -46,7 +46,7 @@ export async function start(emit) {
 
     {
         var item = {
-            'id': '25a68543-b90c-439d-8332-7ef41e06a0e0',
+            'id': 'bbbbbbbb-1111-2222-3333-cccccccccccc',
             'category': 'gear-surf-surfboards',
             'name': 'Kiama Classic Surfboard',
             'quantity': 25,
@@ -61,7 +61,7 @@ export async function start(emit) {
     }
 
     {
-        var id = '70b63682-b93a-4c77-aad2-65501347265f';
+        var id = 'aaaaaaaa-0000-1111-2222-bbbbbbbbbbbb';
         var partitionKey = 'gear-surf-surfboards';
 
         var response = await container.item(id, partitionKey).read();
@@ -85,10 +85,6 @@ export async function start(emit) {
         };
         
         var response = await container.items.query(querySpec).fetchAll();
-        for (var item of response.resources) {
-
-        }
-
         for (var item of response.resources) {
             emit(`Found item:\t${item.name}\t${item.id}`);
         }
