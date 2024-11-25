@@ -13,9 +13,9 @@ products:
 ---
 -->
 
-# Quickstart: Azure Cosmos DB for NoSQL client library for Node.js
+# Quickstart: Azure Cosmos DB for NoSQL - Azure SDK for Node.js
 
-This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL's client library for Node.js. This sample application accesses an existing account, database, and container using the [`@azure/cosmos`](https://www.npmjs.com/package/@azure/cosmos) and [`@azure/identity`](https://www.npmjs.com/package/@azure/identity) packages.
+This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL with the Azure SDK for Python.
 
 ## Prerequisites
 
@@ -25,14 +25,11 @@ This is a simple Express web application to illustrate common basic usage of Azu
 
 ## Quickstart
 
-1. Log in to Azure Developer CLI.
+1. Log in to Azure Developer CLI. *This is only required once per-install.*
 
     ```bash
     azd auth login
     ```
-
-    > [!TIP]
-    > This is only required once per-install.
 
 1. Initialize this template (`cosmos-db-nosql-nodejs-quickstart`) using `azd init`
 
