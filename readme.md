@@ -15,7 +15,7 @@ products:
 
 # Quickstart: Azure Cosmos DB for NoSQL - Azure SDK for Node.js
 
-This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL with the Azure SDK for Python.
+This is a simple Express web application to illustrate common basic usage of Azure Cosmos DB for NoSQL with the Azure SDK for Node.js.
 
 ## Prerequisites
 
