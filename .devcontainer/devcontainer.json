@@ -8,9 +8,11 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbaeumer.vscode-eslint"
+        "bierner.markdown-mermaid",
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-cosmosdb"
       ]
     }
-  },
-  "postCreateCommand": "npm install --prefix ./src/js && npm install --prefix ./src/ts"
+  }
 }
